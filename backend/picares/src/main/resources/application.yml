@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: picares
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/picares
+    username: root
+    password: Mysql123
+
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+
+logging:
+  level:
+    com.example.picares.mapper: debug
