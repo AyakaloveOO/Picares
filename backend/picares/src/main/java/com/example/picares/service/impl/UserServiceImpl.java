@@ -7,12 +7,13 @@ import com.example.picares.common.ThrowUtils;
 import com.example.picares.common.UserAccess;
 import com.example.picares.constant.UserConstant;
 import com.example.picares.mapper.UserMapper;
+import com.example.picares.model.dto.picture.PictureUploadDTO;
 import com.example.picares.model.dto.user.UserLoginDTO;
 import com.example.picares.model.dto.user.UserQueryDTO;
 import com.example.picares.model.dto.user.UserRegisterDTO;
 import com.example.picares.model.dto.user.UserUpdateDTO;
 import com.example.picares.model.vo.LoginUserVO;
-import com.example.picares.model.vo.UserPageVO;
+import com.example.picares.model.vo.PageVO;
 import com.example.picares.model.vo.UserVO;
 import com.example.picares.service.UserService;
 import jakarta.annotation.Resource;
@@ -20,7 +21,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.List;
 
 @Service
@@ -73,6 +78,8 @@ public class UserServiceImpl implements UserService {
         LoginUserVO loginUser = (LoginUserVO) request.getSession().getAttribute(UserConstant.USER_LOGIN);
         ThrowUtils.throwIf(loginUser==null,ErrorCode.NOT_LOGIN_ERROR);
 
+        String id = request.getSession().getId();
+        System.out.println("sessionId："+id);
         return loginUser;
     }
 
@@ -88,8 +95,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserPageVO getUserByPage(UserQueryDTO userQueryDTO) {
-        UserPageVO userPageVO=new UserPageVO();
+    public PageVO<UserVO> getUserByPage(UserQueryDTO userQueryDTO) {
+        PageVO<UserVO> pageVO=new PageVO<>();
         int current = userQueryDTO.getCurrent();
         int pageSize = userQueryDTO.getPageSize();
         userQueryDTO.setCurrent((current-1)*pageSize);
@@ -97,12 +104,12 @@ public class UserServiceImpl implements UserService {
         try {
             List<UserVO> userVO = userMapper.selectUserByPage(userQueryDTO);
             int count = userMapper.countUserByPage(userQueryDTO);
-            userPageVO.setRecords(userVO);
-            userPageVO.setTotal(count);
+            pageVO.setRecords(userVO);
+            pageVO.setTotal(count);
         }catch (Exception e){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR);
         }
-        return userPageVO;
+        return pageVO;
     }
 
     @Override

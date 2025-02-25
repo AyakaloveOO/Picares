@@ -10,7 +10,7 @@ import java.util.Map;
 public class UserAccess {
     private static final Map<Long, List<HttpSession>> loginSession = new HashMap<>();
 
-    private static int loginNum=3;
+    private static final int loginNum=2;
 
     public static void putLoginSession(Long id,HttpSession session){
         List<HttpSession> sessionList = loginSession.computeIfAbsent(id, k -> new ArrayList<>());
@@ -35,15 +35,4 @@ public class UserAccess {
             loginSession.remove(id);
         }
     }
-
-    public static void removeLoginSession(HttpSession session){
-        loginSession.values().forEach(sessionList -> sessionList.remove(session));
-    }
-
-
-    public static void main(String[] args) {
-
-        System.out.println(loginSession);
-    }
-
 }

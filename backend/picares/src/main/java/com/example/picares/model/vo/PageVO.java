@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class UserPageVO {
-    List<UserVO> records;
+public class PageVO<T> {
+    List<T> records;
     int total;
 }

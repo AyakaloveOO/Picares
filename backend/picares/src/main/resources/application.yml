@@ -11,7 +11,9 @@ server:
   port: 8080
   servlet:
     context-path: /api
-
+    session:
+      timeout: 1h
+#  s（秒）、m（分钟）、h（小时）、d（天）等。
 
 logging:
   level:

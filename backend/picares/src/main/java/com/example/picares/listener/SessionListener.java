@@ -2,6 +2,7 @@ package com.example.picares.listener;
 
 import com.example.picares.common.UserAccess;
 import com.example.picares.constant.UserConstant;
+import com.example.picares.model.vo.LoginUserVO;
 import jakarta.servlet.annotation.WebListener;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpSessionEvent;
@@ -12,9 +13,9 @@ public class SessionListener implements HttpSessionListener {
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
         HttpSession session = se.getSession();
-        Object object = session.getAttribute(UserConstant.USER_LOGIN);
-        System.out.println("session的值："+object.toString());
 
-        UserAccess.removeLoginSession(session);
+        LoginUserVO loginUser = (LoginUserVO) session.getAttribute(UserConstant.USER_LOGIN);
+        System.out.println("sesssion destroyed，"+loginUser.toString());
+        UserAccess.removeLoginSession(loginUser.getId(),session);
     }
 }
