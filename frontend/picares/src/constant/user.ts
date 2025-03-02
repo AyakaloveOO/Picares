@@ -3,6 +3,8 @@ export const USER_ENUM = {
   ADMIN: { name: "admin", value: 2 },
 };
 
+export const IMAGE_HOST = "http://localhost:8080/api/picture";
+
 export const DEFAULT_USER: API.LoginUserVO = {
   userName: "未登录",
   userAvatar: "/assets/notLoginUser.png",
@@ -10,7 +12,7 @@ export const DEFAULT_USER: API.LoginUserVO = {
   userRole: "guest",
 };
 
-export const getValueByName = (name: string|undefined) => {
-  const entry = Object.values(USER_ENUM).find(item => item.name === name);
-  return entry?.value??0;
+export const getValueByName = (name: string | undefined) => {
+  const entry = Object.values(USER_ENUM).find((item) => item.name === name);
+  return entry?.value ?? 0;
 };

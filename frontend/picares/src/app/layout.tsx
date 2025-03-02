@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import stores from "@/stores";
 import React from "react";
 import "@ant-design/v5-patch-for-react-19";
+import AccessLayout from "@/layouts/AccessLayout";
 
 export default function RootLayout({
   children,
@@ -19,7 +20,9 @@ export default function RootLayout({
         <AntdRegistry>
           <Provider store={stores}>
             <InitLayout>
-              <BasicLayout>{children}</BasicLayout>
+              <BasicLayout>
+                <AccessLayout>{children}</AccessLayout>
+              </BasicLayout>
             </InitLayout>
           </Provider>
         </AntdRegistry>

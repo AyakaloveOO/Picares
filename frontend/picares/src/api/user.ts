@@ -32,11 +32,11 @@ export function userLogout() {
   });
 }
 
-export function updateUser(body: API.UserUpdateDTO) {
+export function updateUser(body: FormData) {
   return request("/user/update", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
     data: body,
   });

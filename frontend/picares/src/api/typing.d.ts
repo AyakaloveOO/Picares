@@ -49,9 +49,30 @@ declare namespace API {
     userProfile?: string;
     userRole?: string;
     createTime?: string;
+    [key: string]: any;
   };
-  type UserPageVO = {
-    records?: UserVO[];
-    total?: number;
+  type PictureAdminVO = {
+    id?: number;
+    url?: string;
+    name?: string;
+    introduction?: string;
+    category?: string;
+    tags?: string;
+    picSize: number;
+    picWidth: number;
+    picHeight: number;
+    picScale: number;
+    picFormat: string;
+    userAccount?: string;
+    userAvatar?: string;
+    createTime?: string;
+  };
+  type PictureQueryDTO = {
+    name?: string;
+    introduction?: string;
+    category?: string;
+    tags?: string;
+    picFormat?: string;
+    userAccount?: string;
   };
 }

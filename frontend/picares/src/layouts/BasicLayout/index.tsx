@@ -4,6 +4,7 @@ import {
   InfoCircleFilled,
   LogoutOutlined,
   QuestionCircleFilled,
+  UserOutlined,
 } from "@ant-design/icons";
 import { ProLayout } from "@ant-design/pro-components";
 import { Dropdown, message } from "antd";
@@ -11,10 +12,10 @@ import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { getMenuMap, menus } from "@/config/menus";
+import { getFilterMenu } from "@/config/menus";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoginUser } from "@/stores/loginUser";
-import {DEFAULT_USER, getValueByName} from "@/constant/user";
+import { DEFAULT_USER, getValueByName, IMAGE_HOST } from "@/constant/user";
 import "./index.css";
 import GlobalFooter from "@/layouts/BasicLayout/components/GlobalFooter";
 import { userLogout } from "@/api/user";
@@ -26,6 +27,7 @@ interface Props {
 
 export default function BasicLayout({ children }: Props) {
   const loginUser = useSelector((state: RootState) => state.loginUser);
+  const accessValue = getValueByName(loginUser.userRole);
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -64,24 +66,31 @@ export default function BasicLayout({ children }: Props) {
           pathname,
         }}
         avatarProps={{
-          src: loginUser.userAvatar || "/assets/notLoginUser.png",
+          src: loginUser!==DEFAULT_USER? (IMAGE_HOST + loginUser.userAvatar) : "/assets/notLoginUser.png",
           size: "small",
           title: loginUser.userName,
           render: (props, dom) => {
             return (
               <Dropdown
                 menu={{
-                  items: [
+                  items: loginUser!==DEFAULT_USER?[
+                    {
+                      key: "home",
+                      icon: <UserOutlined />,
+                      label: "个人主页",
+                    },
                     {
                       key: "logout",
                       icon: <LogoutOutlined />,
                       label: "退出登录",
                     },
-                  ],
+                  ]:[],
                   onClick: async (e: { key: React.Key }) => {
                     const { key } = e;
                     if (key === "logout") {
                       doLogout();
+                    }
+                    if (key === "home") {
                     }
                   },
                 }}
@@ -111,9 +120,8 @@ export default function BasicLayout({ children }: Props) {
         footerRender={() => {
           return <GlobalFooter />;
         }}
-        onMenuHeaderClick={(e) => console.log(e)}
         menuDataRender={() => {
-          return getMenuMap(getValueByName(loginUser.userRole));
+          return getFilterMenu(accessValue);
         }}
         menuItemRender={(item, dom) => (
           <Link href={item.path || "/"} target={item.target}>
