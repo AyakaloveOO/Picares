@@ -34,7 +34,5 @@
             <if test="userRole!=null">userRole=#{userRole} and</if>
             <if test="true">isDelete=0</if>
         </where>
-        <if test="sortField!=null">order by ${sortField} ${sortOrder}</if>
-        limit #{current},#{pageSize}
     </select>
 </mapper>

@@ -22,6 +22,8 @@ public interface UserService {
 
     void updateUser(UserUpdateDTO userUpdateDTO);
 
+    void updateUser(MultipartFile multipartFile,UserUpdateDTO userUpdateDTO);
+
     void deleteUser(Long id);
 
     PageVO<UserVO> getUserByPage(UserQueryDTO userQueryDTO);

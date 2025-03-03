@@ -21,4 +21,32 @@
             #{picSize},#{picWidth},#{picHeight},#{picScale},#{picFormat},#{userId}
         </trim>
     </insert>
+    <select id="getPictureByPage">
+        select * from picture join user on user.id=picture.userId
+        <where>
+            <if test="name!=null">name like concat('%', #{name}, '%') and</if>
+            <if test="introduction!=null">introduction like concat('%', #{introduction}, '%') and</if>
+            <if test="category!=null">category=#{category} and</if>
+            <if test="tags!=null">tags like concat('%', #{tags}, '%') and</if>
+            <if test="picFormat!=null">picFormat=#{picFormat} and</if>
+            <if test="userAccount!=null">user.userAccount like concat('%', #{userAccount}, '%') and</if>
+            <if test="true">user.isDelete=0 and</if>
+            <if test="true">picture.isDelete=0</if>
+        </where>
+        <if test="sortField!=null">order by ${sortField} ${sortOrder}</if>
+        limit #{current},#{pageSize}
+    </select>
+    <select id="countPictureByPage">
+        select count(*) from user join picture on user.id=picture.userId
+        <where>
+            <if test="name!=null">name like concat('%', #{name}, '%') and</if>
+            <if test="introduction!=null">introduction like concat('%', #{introduction}, '%') and</if>
+            <if test="category!=null">category=#{category} and</if>
+            <if test="tags!=null">tags like concat('%', #{tags}, '%') and</if>
+            <if test="picFormat!=null">picFormat=#{picFormat} and</if>
+            <if test="userAccount!=null">user.userAccount like concat('%', #{userAccount}, '%') and</if>
+            <if test="true">user.isDelete=0 and</if>
+            <if test="true">picture.isDelete=0</if>
+        </where>
+    </select>
 </mapper>
