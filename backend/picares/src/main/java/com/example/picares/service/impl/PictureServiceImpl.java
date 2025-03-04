@@ -1,5 +1,6 @@
 package com.example.picares.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.example.picares.common.BusinessException;
 import com.example.picares.common.ErrorCode;
@@ -9,11 +10,13 @@ import com.example.picares.mapper.PictureMapper;
 import com.example.picares.model.dto.DeleteDTO;
 import com.example.picares.model.dto.picture.PictureQueryDTO;
 import com.example.picares.model.dto.picture.PictureUploadDTO;
-import com.example.picares.model.entity.Picture;
+import com.example.picares.model.entity.picture.PictureQuery;
+import com.example.picares.model.entity.picture.PictureUpload;
 import com.example.picares.model.vo.LoginUserVO;
 import com.example.picares.model.vo.PageVO;
 import com.example.picares.model.vo.PictureAdminVO;
 import com.example.picares.service.PictureService;
+import com.example.picares.test.Picture;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +46,9 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     public void uploadPicture(MultipartFile multipartFile, PictureUploadDTO pictureUploadDTO, HttpServletRequest request) {
+        PictureUpload pictureUpload = new PictureUpload();
+        BeanUtil.copyProperties(pictureUploadDTO, pictureUpload);
+
         LoginUserVO loginUser = (LoginUserVO) request.getSession().getAttribute(UserConstant.USER_LOGIN);
         Long id = loginUser.getId();
         String userAccount = loginUser.getUserAccount();
@@ -80,22 +86,17 @@ public class PictureServiceImpl implements PictureService {
 //            Path dest=uploadDir.resolve(fileName+"."+type);
             File dest = new File(dir.getAbsoluteFile() + File.separator + fileName + "." + type);
 
-            Picture picture = new Picture();
-            picture.setUrl(url);
-            picture.setName(pictureUploadDTO.getName());
-            picture.setIntroduction(pictureUploadDTO.getIntroduction());
-            picture.setCategory(pictureUploadDTO.getCategory());
-            picture.setTags(pictureUploadDTO.getTags());
-            picture.setPicSize(size);
-            picture.setPicWidth(width);
-            picture.setPicHeight(height);
-            picture.setPicScale(scale);
-            picture.setPicFormat(type);
-            picture.setUserId(id);
+            pictureUpload.setUrl(url);
+            pictureUpload.setPicSize(size);
+            pictureUpload.setPicWidth(width);
+            pictureUpload.setPicHeight(height);
+            pictureUpload.setPicScale(scale);
+            pictureUpload.setPicFormat(type);
+            pictureUpload.setUserId(id);
 
             transactionTemplate.execute(status -> {
                 try {
-                    pictureMapper.insertPicture(picture);
+                    pictureMapper.insertPicture(pictureUpload);
                     ImageIO.write(image, type, dest);
                 } catch (Exception e) {
                     log.error("图片上传失败，", e);
@@ -112,14 +113,17 @@ public class PictureServiceImpl implements PictureService {
 
     @Override
     public PageVO<PictureAdminVO> getPictureByPage(PictureQueryDTO pictureQueryDTO) {
+        PictureQuery pictureQuery = new PictureQuery();
+        BeanUtil.copyProperties(pictureQueryDTO, pictureQuery);
+
         PageVO<PictureAdminVO> pageVO = new PageVO<>();
         int current = pictureQueryDTO.getCurrent();
         int pageSize = pictureQueryDTO.getPageSize();
-        pictureQueryDTO.setCurrent((current - 1) * pageSize);
+        pictureQuery.setCurrent((current - 1) * pageSize);
 
         try {
-            List<PictureAdminVO> pictureByPage = pictureMapper.getPictureByPage(pictureQueryDTO);
-            int count = pictureMapper.countPictureByPage(pictureQueryDTO);
+            List<PictureAdminVO> pictureByPage = pictureMapper.getPictureByPage(pictureQuery);
+            int count = pictureMapper.countPictureByPage(pictureQuery);
             pageVO.setRecords(pictureByPage);
             pageVO.setTotal(count);
         } catch (Exception e) {

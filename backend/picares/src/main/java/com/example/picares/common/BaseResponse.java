@@ -20,8 +20,6 @@ public class BaseResponse<T> {
         this.message = message;
     }
 
-
-
     /**
      * 失败，errorcode
      * @param errorCode

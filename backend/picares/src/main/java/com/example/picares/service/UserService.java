@@ -1,13 +1,12 @@
 package com.example.picares.service;
 
-import com.example.picares.model.dto.picture.PictureUploadDTO;
 import com.example.picares.model.dto.user.UserLoginDTO;
 import com.example.picares.model.dto.user.UserQueryDTO;
 import com.example.picares.model.dto.user.UserRegisterDTO;
 import com.example.picares.model.dto.user.UserUpdateDTO;
 import com.example.picares.model.vo.LoginUserVO;
 import com.example.picares.model.vo.PageVO;
-import com.example.picares.model.vo.UserVO;
+import com.example.picares.model.vo.UserAdminVO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,5 +25,5 @@ public interface UserService {
 
     void deleteUser(Long id);
 
-    PageVO<UserVO> getUserByPage(UserQueryDTO userQueryDTO);
+    PageVO<UserAdminVO> getUserByPage(UserQueryDTO userQueryDTO);
 }

@@ -1,12 +1,9 @@
-package com.example.picares.model.entity;
+package com.example.picares.model.entity.picture;
 
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
-public class Picture {
-    private Long id;
+public class PictureUpload {
     private String url;
     private String name;
     private String introduction;
@@ -18,8 +15,4 @@ public class Picture {
     private Double picScale;
     private String picFormat;
     private Long userId;
-    private Date createTime;
-    private Date editTime;
-    private Date updateTime;
-    private Integer isDelete;
 }

@@ -1,7 +1,7 @@
 package com.example.picares.mapper;
 
-import com.example.picares.model.dto.picture.PictureQueryDTO;
-import com.example.picares.model.entity.Picture;
+import com.example.picares.model.entity.picture.PictureQuery;
+import com.example.picares.model.entity.picture.PictureUpload;
 import com.example.picares.model.vo.PictureAdminVO;
 import org.apache.ibatis.annotations.Update;
 
@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface PictureMapper {
 
-    void insertPicture(Picture picture);
+    void insertPicture(PictureUpload pictureUpload);
 
-    List<PictureAdminVO> getPictureByPage(PictureQueryDTO pictureQueryDTO);
+    List<PictureAdminVO> getPictureByPage(PictureQuery pictureQuery);
 
-    int countPictureByPage(PictureQueryDTO pictureQueryDTO);
+    int countPictureByPage(PictureQuery pictureQuery);
 
     @Update("update picture set isDelete=1 where id=#{id}")
     void deletePicture(Long id);

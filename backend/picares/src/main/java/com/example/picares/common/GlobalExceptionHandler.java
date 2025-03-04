@@ -2,8 +2,14 @@ package com.example.picares.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.stream.Collectors;
+
+import static com.fasterxml.jackson.databind.util.ClassUtil.getRootCause;
 
 @RestControllerAdvice
 @Slf4j

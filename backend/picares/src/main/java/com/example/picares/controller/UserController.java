@@ -13,7 +13,7 @@ import com.example.picares.model.dto.user.UserUpdateDTO;
 import com.example.picares.model.enums.UserEnums;
 import com.example.picares.model.vo.LoginUserVO;
 import com.example.picares.model.vo.PageVO;
-import com.example.picares.model.vo.UserVO;
+import com.example.picares.model.vo.UserAdminVO;
 import com.example.picares.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,10 +70,10 @@ public class UserController {
 
     @PostMapping("/get")
     @AuthCheck(mustRole = UserEnums.ADMIN)
-    public BaseResponse<PageVO<UserVO>> getUserByPage(@RequestBody UserQueryDTO userQueryDTO) {
+    public BaseResponse<PageVO<UserAdminVO>> getUserByPage(@RequestBody UserQueryDTO userQueryDTO) {
         ThrowUtils.throwIf(userQueryDTO == null, ErrorCode.PARAMS_ERROR);
 
-        PageVO<UserVO> userPage = userService.getUserByPage(userQueryDTO);
+        PageVO<UserAdminVO> userPage = userService.getUserByPage(userQueryDTO);
         return ResultUtils.success(userPage);
     }
 

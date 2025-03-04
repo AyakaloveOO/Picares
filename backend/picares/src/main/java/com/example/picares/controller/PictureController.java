@@ -39,15 +39,15 @@ public class PictureController {
         return ResultUtils.success(true);
     }
 
-    @GetMapping("/images/{id}/{path}")
-    public void getImage(@PathVariable Long id, @PathVariable String path, HttpServletResponse response) {
-        String imagePath = "./images/" + id + File.separator + path;
+    @GetMapping("/images/{userAccount}/{path}")
+    public void getImage(@PathVariable String userAccount, @PathVariable String path, HttpServletResponse response) {
+        String imagePath = "./images/" + userAccount + File.separator + path;
         getPicture(imagePath, response);
     }
 
-    @GetMapping("/avatar/{id}/{path}")
-    public void getAvatar(@PathVariable Long id, @PathVariable String path, HttpServletResponse response) {
-        String imagePath = "./avatar/" + id + File.separator + path;
+    @GetMapping("/avatar/{userAccount}/{path}")
+    public void getAvatar(@PathVariable String userAccount, @PathVariable String path, HttpServletResponse response) {
+        String imagePath = "./avatar/" + userAccount + File.separator + path;
         getPicture(imagePath, response);
     }
 

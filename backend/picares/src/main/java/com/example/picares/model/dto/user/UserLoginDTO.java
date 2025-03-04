@@ -14,7 +14,7 @@ public class UserLoginDTO {
 
     public void setUserAccount(String userAccount) {
 
-        ThrowUtils.throwIf(userAccount==null,ErrorCode.PARAMS_ERROR);
+        ThrowUtils.throwIf(userAccount==null, ErrorCode.PARAMS_ERROR);
         ThrowUtils.throwIf(userAccount.length()<4, ErrorCode.PARAMS_ERROR,"账号过短");
         ThrowUtils.throwIf(userAccount.length()>16,ErrorCode.PARAMS_ERROR,"账号过长");
         this.userAccount = userAccount;

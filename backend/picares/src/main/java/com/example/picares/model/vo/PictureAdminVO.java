@@ -18,6 +18,5 @@ public class PictureAdminVO {
     private Double picScale;
     private String picFormat;
     private String userAccount;
-    private String userAvatar;
     private Date createTime;
 }
