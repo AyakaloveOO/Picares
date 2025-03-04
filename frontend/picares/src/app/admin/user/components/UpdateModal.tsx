@@ -5,9 +5,9 @@ import { ProColumns, ProTable } from "@ant-design/pro-components";
 interface Props {
   visible: boolean;
   onCancel: () => void;
-  columns: ProColumns<API.UserVO>[];
-  oldData?: API.UserVO;
-  onSubmit: (values: API.UserVO, id: number) => void;
+  columns: ProColumns<API.UserAdminVO>[];
+  oldData?: API.UserAdminVO;
+  onSubmit: (values: API.UserAdminVO, id: number) => void;
 }
 
 const UpdateModal: React.FC<Props> = (props) => {

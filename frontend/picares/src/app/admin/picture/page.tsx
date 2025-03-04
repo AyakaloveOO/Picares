@@ -1,140 +1,169 @@
 "use client";
-import { PageContainer } from "@ant-design/pro-components";
-import { Card, Flex, List, message, Space, Tooltip, Typography } from "antd";
-import React, { useEffect, useState } from "react";
-import { deletePicture, getPictureByPage } from "@/api/picture";
+import {
+  ActionType,
+  PageContainer,
+  ProColumns,
+  ProTable,
+} from "@ant-design/pro-components";
+import { Button, Space } from "antd";
+import React, { useRef } from "react";
+import { getPictureByPage } from "@/api/picture";
+import { Image as AntdImage } from "antd/lib";
 import { IMAGE_HOST } from "@/constant/user";
-import { Image } from "antd/lib";
-import NextImage from "next/image";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
 
 const PictureAdminPage: React.FC = () => {
-  const [data, setData] = useState();
-  const [_expanded, setExpanded] = useState(false);
-
-  const doSearch = async () => {
-    try {
-      const res = await getPictureByPage({});
-      console.log(res.data?.records);
-      setData(res.data?.records);
-    } catch (e: any) {
-      message.error("获取数据失败，" + e.message);
-    }
-  };
-
-  const doDelete = async (values: API.PictureAdminVO) => {
-    try {
-      await deletePicture({ id: values.id });
-      message.success("删除成功");
-      doSearch();
-    } catch (e: any) {
-      message.error("删除失败，" + e.message);
-    }
-  };
-
-  useEffect(() => {
-    doSearch();
-  }, []);
+  const actionRef = useRef<ActionType>(null);
+  const columns: ProColumns<API.PictureAdminVO>[] = [
+    {
+      title: "id",
+      dataIndex: "id",
+      valueType: "text",
+      hideInSearch: true,
+      hideInTable: true,
+      hideInForm: true,
+    },
+    {
+      title: "图片",
+      dataIndex: "name",
+      valueType: "image",
+      hideInForm: true,
+      hideInSearch: true,
+      render: (_, record) => {
+        return (
+          <AntdImage
+            src={IMAGE_HOST + record.url}
+            alt={""}
+            width={44}
+            height={44}
+          />
+        );
+      },
+    },
+    {
+      title: "图片名称",
+      dataIndex: "name",
+      valueType: "text",
+      hideInForm: true,
+    },
+    {
+      title: "简介",
+      dataIndex: "introduction",
+      valueType: "text",
+      hideInForm: true,
+      width:240
+    },
+    {
+      title: "分类",
+      dataIndex: "category",
+      valueType: "text",
+    },
+    {
+      title: "标签",
+      dataIndex: "tags",
+      valueType: "text",
+    },
+    {
+      title: "图片体积",
+      dataIndex: "picSize",
+      valueType: "digit",
+      hideInSearch: true,
+      render: (_, record) => {
+        return (record.picSize / 1024).toFixed(2) + "KB";
+      },
+    },
+    {
+      title: "宽度",
+      dataIndex: "picWidth",
+      valueType: "digit",
+      hideInSearch: true,
+    },
+    {
+      title: "高度",
+      dataIndex: "picHeight",
+      valueType: "digit",
+      hideInSearch: true,
+    },
+    {
+      title: "宽高比例",
+      dataIndex: "picScale",
+      valueType: "digit",
+      hideInSearch: true,
+      render: (_, record) => {
+        return record.picScale.toFixed(2);
+      },
+    },
+    {
+      title: "格式",
+      dataIndex: "picFormat",
+      valueType: "text",
+    },
+    {
+      title: "创建人",
+      dataIndex: "userAccount",
+      valueType: "text",
+    },
+    {
+      title: "创建时间",
+      sorter: true,
+      dataIndex: "createTime",
+      valueType: "dateTime",
+      hideInForm: true,
+      hideInSearch: true,
+      width: 180,
+    },
+    {
+      title: "操作",
+      valueType: "option",
+      key: "option",
+      render: (_, record) => (
+        <Space>
+          <Button size={"small"} color={"cyan"} variant="filled">
+            编辑
+          </Button>
+          <Button size={"small"} color={"volcano"} variant="filled">
+            删除
+          </Button>
+        </Space>
+      ),
+      width: 140,
+    },
+  ];
 
   return (
     <div className={"pictureAdminPage"}>
       <PageContainer>
-        <List
-          grid={{
-            gutter: 16,
-            xs: 1,
-            sm: 2,
-            md: 3,
-            lg: 4,
-            xl: 5,
-            xxl: 6,
+        <ProTable
+          columns={columns}
+          actionRef={actionRef}
+          request={async (params, sort, filter) => {
+            console.log(params, sort, filter);
+            const sortField = Object.keys(sort)?.[0];
+            const sortOrder = sort[sortField] ?? undefined;
+            const { code, data } = await getPictureByPage({
+              ...params,
+              sortField,
+              sortOrder,
+              ...filter,
+            });
+            return {
+              success: code === 0,
+              data: data.records,
+              total: data.total,
+            };
           }}
-          dataSource={data}
-          renderItem={(item: API.PictureAdminVO) => (
-            <List.Item>
-              <Card
-                cover={
-                  <Image
-                    src={IMAGE_HOST + item.url}
-                    alt={item.name || "/"}
-                    height={200}
-                    style={{
-                      objectFit: "cover",
-                    }}
-                  />
-                }
-                extra={
-                  <Tooltip title={item.userAccount}>
-                    <NextImage
-                      src={IMAGE_HOST + item.userAvatar}
-                      alt={""}
-                      width={44}
-                      height={44}
-                      style={{ borderRadius: "50%" }}
-                    />
-                  </Tooltip>
-                }
-                title={item.name}
-                actions={[
-                  <EditOutlined
-                    key="edit"
-                    style={{ color: "green" }}
-                    title={"编辑"}
-                  />,
-                  <DeleteOutlined
-                    key="delete"
-                    style={{ color: "red" }}
-                    title={"删除"}
-                    onClick={() => doDelete(item)}
-                  />,
-                ]}
-              >
-                <Flex justify="space-around" align="start" vertical={true}>
-                  <Typography.Paragraph
-                    type={"secondary"}
-                    ellipsis={{
-                      rows: 1,
-                      expandable: "collapsible",
-                      onExpand: (_, info) => setExpanded(info.expanded),
-                    }}
-                  >
-                    介绍：{item.introduction}
-                  </Typography.Paragraph>
-                  <Flex justify={"space-between"} align={"center"}>
-                    <Space>
-                      <Typography.Text type={"secondary"}>
-                        大小：{(item.picSize / 1000).toFixed(2)}MB
-                      </Typography.Text>
-                      <Typography.Text type={"secondary"}>
-                        类型：{item.picFormat}
-                      </Typography.Text>
-                    </Space>
-                  </Flex>
-                  <Flex justify={"space-between"} align={"center"}>
-                    <Space>
-                      <Typography.Text type={"secondary"}>
-                        宽度：{item.picWidth}
-                      </Typography.Text>
-                      <Typography.Text type={"secondary"}>
-                        高度：{item.picHeight}
-                      </Typography.Text>
-                    </Space>
-                  </Flex>
-                  <Typography.Text type={"secondary"}>
-                    宽高比：{item.picScale.toFixed(2)}
-                  </Typography.Text>
-                  <Typography.Link type={"secondary"}>
-                    上传者账号：{item.userAccount}
-                  </Typography.Link>
-                  <Typography.Text type={"secondary"}>
-                    创建时间：
-                    {dayjs(item.createTime).format("YYYY-MM-DD HH:mm:ss")}
-                  </Typography.Text>
-                </Flex>
-              </Card>
-            </List.Item>
-          )}
+          rowKey="id"
+          search={{
+            labelWidth: "auto",
+            span: 6,
+            defaultCollapsed: false,
+          }}
+          options={{
+            setting: false,
+            density: false,
+          }}
+          pagination={{
+            pageSize: 10,
+          }}
         />
       </PageContainer>
     </div>

@@ -15,19 +15,20 @@ import {
   UploadFile,
   type UploadProps,
 } from "antd";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { deleteUser, getUserByPage, updateUser } from "@/api/user";
 import { IMAGE_HOST, USER_ENUM } from "@/constant/user";
 import UpdateModal from "@/app/admin/user/components/UpdateModal";
 import { Image as AntdImage } from "antd/lib";
 import ImgCrop from "antd-img-crop";
+import { LoadingOutlined } from "@ant-design/icons";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const UserAdminPage = () => {
   const actionRef = useRef<ActionType>(null);
   const [visible, setVisible] = useState<boolean>(false);
-  const [currentDate, setCurrentDate] = useState<API.UserVO>();
+  const [currentDate, setCurrentDate] = useState<API.UserAdminVO>();
   const [imageUrl, setImageUrl] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState(null);
@@ -54,7 +55,10 @@ const UserAdminPage = () => {
   };
 
   const handleChange = (info: any) => {
-    console.log("change");
+    if (info.file.status === "uploading") {
+      setLoading(true);
+      return;
+    }
     if (info.file.status === "done") {
       console.log("状态", info.file.status);
       setFile(info.file.originFileObj);
@@ -65,7 +69,7 @@ const UserAdminPage = () => {
     }
   };
 
-  const doDelete = async (values: API.UserVO) => {
+  const doDelete = async (values: API.UserAdminVO) => {
     const hide = message.loading("正在删除");
     try {
       await deleteUser({
@@ -80,8 +84,7 @@ const UserAdminPage = () => {
     }
   };
 
-  const doSubmit = async (values: API.UserVO, id: number) => {
-    console.log("values:：", values, id);
+  const doSubmit = async (values: API.UserAdminVO, id: number) => {
     const formData = new FormData();
     if (file) {
       formData.append("avatar", file);
@@ -92,10 +95,7 @@ const UserAdminPage = () => {
       }
     });
     formData.append("id", id.toString());
-    console.log("avatar:", formData.get("avatar"));
-    console.log("userName:", formData.get("userRole"));
     try {
-      //点击提交后后端报错：2025-03-02T21:12:32.144+08:00  WARN 26360 --- [picares] [io-8080-exec-10] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.multipart.support.MissingServletRequestPartException: Required part 'avatar' is not present.]
       await updateUser(formData);
       message.success("更新成功");
       setVisible(false);
@@ -107,7 +107,7 @@ const UserAdminPage = () => {
     }
   };
 
-  const columns: ProColumns<API.UserVO>[] = [
+  const columns: ProColumns<API.UserAdminVO>[] = [
     {
       title: "id",
       dataIndex: "id",
@@ -119,6 +119,12 @@ const UserAdminPage = () => {
     {
       title: "账号",
       dataIndex: "userAccount",
+      valueType: "text",
+      hideInForm: true,
+    },
+    {
+      title: "名称",
+      dataIndex: "userName",
       valueType: "text",
     },
     {
@@ -153,12 +159,16 @@ const UserAdminPage = () => {
               onChange={handleChange}
               onPreview={onPreview}
             >
-              <AntdImage
-                src={imageUrl}
-                alt="avatar"
-                style={{ width: "100%" }}
-                preview={false}
-              />
+              {loading ? (
+                <LoadingOutlined />
+              ) : (
+                <AntdImage
+                  src={imageUrl}
+                  alt="avatar"
+                  style={{ width: "100%" }}
+                  preview={false}
+                />
+              )}
             </Upload>
           </ImgCrop>
         );

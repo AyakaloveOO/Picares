@@ -41,7 +41,7 @@ declare namespace API {
     userProfile?: string;
     userRole?: string;
   };
-  type UserVO = {
+  type UserAdminVO = {
     id?: number;
     userAccount?: string;
     userName?: string;
@@ -64,10 +64,13 @@ declare namespace API {
     picScale: number;
     picFormat: string;
     userAccount?: string;
-    userAvatar?: string;
     createTime?: string;
   };
   type PictureQueryDTO = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
     name?: string;
     introduction?: string;
     category?: string;
